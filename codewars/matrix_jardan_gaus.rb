@@ -22,6 +22,12 @@
     result = []
     line = example.delete(' ')
     left_side, right_side = line.split('=')
+    while left_side.include?('(')
+      left_side = open_brackets(left_side)
+    end
+    while right_side.include?('(')
+      right_side = open_brackets(right_side)
+    end
     default_row.each do |key, _nil_value|
       koef = get_argument_koef(left_side, key) -
         get_argument_koef(right_side, key)
@@ -43,6 +49,48 @@
         value.to_i
       end
     end.sum
+  end
+
+  def open_brackets(line)
+    regexp = %r{((\A|[-+]?\d*|)[(]([^()]+)[)])} 
+    line.gsub!(regexp) do |exp|
+      koef, bracket_line = exp.split('(') 
+      if koef == "" or koef == "+"
+        koef = 1
+      elsif koef == '-'
+        koef = -1
+      else
+        koef =koef.to_i
+      end
+      bracket_line.gsub!(')', '')
+      open_bracket(koef, bracket_line)
+    end
+    return line
+  end
+
+  def open_bracket(koef, str)
+    regexp = %r{(\A-?\d*|[-+]\d*)}
+    str.gsub(regexp) do |el|
+      if el == "" or el == "+"
+        if koef > 0
+          "+#{koef}"
+        else
+          koef
+        end
+      elsif el == '-'
+        if koef < 0
+          "+#{-koef}"
+        else
+          -koef
+        end
+      else
+        if el.to_i*koef > 0
+          "+#{el.to_i*koef}"
+        else
+          el.to_i*koef
+        end
+      end
+    end
   end
 
   def detect_variables(examples)
