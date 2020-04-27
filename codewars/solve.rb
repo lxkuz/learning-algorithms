@@ -159,7 +159,7 @@ def parse_formula(formula, default_row)
 end
 
 def get_argument_koef(line, name)
-  regexp = %r{(\A#{name.to_s}|[-+]\d*#{name.to_s})}
+  regexp = %r{(\A-?\d*#{name.to_s}|[-+]\d*#{name.to_s})}
   matches = line.scan(regexp).flatten
   matches.map{|s| s.delete(name.to_s)}.map do |value|
     if value == "" or value == "+"
@@ -190,7 +190,7 @@ def open_brackets(line)
 end
 
 def open_bracket(koef, str)
-  regexp = %r{(\A-?\d*|[-+]\d*)}
+  regexp = %r{(\A[-+]?\d*|[-+]\d*)}
   str.gsub(regexp) do |el|
     if el == "" or el == "+"
       if koef > 0
@@ -246,6 +246,7 @@ def test
   # test_lxkuz_matrix
   # test_main
   test_brackets_single
+  test_big_number
   puts 'ALL GOOD'
 end
 
@@ -303,6 +304,18 @@ end
 
 def test_brackets_nested
   examples = 	['-9w = A', '14w - 3A = n', '-7w + 18A + 9n = g']
+  formula =	'2(2g - 3(-1n + 2g) + 1g) - 1n - 2g'
+  expected ='481w'
+  act = simplify(examples,formula)
+  unless  act == expected
+    puts "Expected: #{expected.inspect}"
+    puts "Got: #{act.inspect}"
+    raise 'Test Failed' 
+  end
+end
+
+def test_big_number
+  examples = 	['14u = T', '-6u + 8T = U', '-1u + 11T + 7U = H', ]
   formula =	'2(2g - 3(-1n + 2g) + 1g) - 1n - 2g'
   expected ='481w'
   act = simplify(examples,formula)
