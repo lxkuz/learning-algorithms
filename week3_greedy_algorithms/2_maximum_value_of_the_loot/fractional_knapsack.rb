@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # by Andronik Ordian
 
+require 'byebug'
+
 def get_optimal_value(capacity, weights, values)
   value = 0.0
   sorted_items = values.zip(weights).sort_by{|v, w| - v.to_f / w}
@@ -31,7 +33,7 @@ end
 
 if __FILE__ == $0
   data = STDIN.read.split().map(&:to_i)
-  # puts data
+  byebug
   n, capacity = data[0,2]
   values = data.values_at(*(2..2*n).step(2))
   weights = data.values_at(*(3..2*n+1).step(2))
