@@ -9,7 +9,7 @@ def compute_min_refills(distance, tank, stops)
       current_refill += 1
     end
     if last_refill == current_refill
-      return 'IMPOSSIBLE'
+      return -1
     end
     if current_refill <= n
       refills += 1
@@ -25,7 +25,9 @@ def test
 end
 
 if __FILE__ == $0
-  data = gets.split().map(&:to_i)
-  d, m, n, *stops = data
+  d = gets.to_i
+  m = gets.to_i
+  n = gets.to_i
+  stops = gets.split().map(&:to_i)
   puts "#{compute_min_refills(d, m, stops)}"
 end
